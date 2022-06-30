@@ -12,7 +12,9 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-4">
-                <input id="input" type="text" placeholder="">
+                <label for="input">Language : </label><input id="lang" type="text" placeholder="en" value="en"><br>
+                <label for="input">Min length : </label><input id="minLen" type="text" placeholder="" value = 3><br>
+                <label for="input">Your String : </label><input id="input" type="text" placeholder="">
             </div>
             <div>
                 <button id="btn_all">GENERATE ALL</button>
@@ -29,13 +31,15 @@
         var btn_all = document.getElementById('btn_all');
         var btn_exist = document.getElementById('btn_exist');
         var btn_clear = document.getElementById('btn_clear');
+        var lang = document.getElementById('lang');
+        var minLen = document.getElementById('minLen');
         var input = document.getElementById('input');
         var output = document.getElementById('output');
 
         function checkWord(wordQuery){
 
             const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/';
-            const queryParams = 'en/';
+            const queryParams = lang.value+"/"; // 'en/';
             const url = apiUrl+queryParams+wordQuery;
           
             //create XMLHttpRequest object
@@ -62,6 +66,8 @@
 
                 } else if (xhr.status === 404) {
                     console.log("No records found")
+                } else if (xhr.status === 429) {
+                    console.log("Too many requests")
                 }
             }
 
@@ -107,6 +113,7 @@
             permArr.length = 0;
             usedChars.length = 0;
             let perm = permute(input.value);
+
             output.innerHTML = "Found "+perm.length+" combinations, there are all:<br>";
             output.innerHTML += "<br>"+perm.join('<br>'); // output all combinations
         }
@@ -115,11 +122,9 @@
             permArr.length = 0;
             usedChars.length = 0;
             let perm_all = permute(input.value);
-            let perm = perm_all.filter(word => word.length > 2);
+            let perm = perm_all.filter(word => word.length >= minLen.value);
 
-console.log(perm);
-
-            output.innerHTML = "Found "+perm.length+" combinations >2chars, there are existing:<br>";
+            output.innerHTML = "Found "+perm.length+" combinations >= "+minLen.value+"chars, there are existing:<br>";
             for(let i=0; i < perm.length; i++){
                 checkWord(perm[i])
             }
