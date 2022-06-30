@@ -20,7 +20,7 @@
                 <button id="btn_clear">CLEAR</button>
             </div>
             <div>
-                <label for="output">The result is: </label><output type="textbox" id="output"></output>
+                <label for="output">Input string, then press a button and find result below. </label><output type="textbox" id="output"></output>
             </div>
         </div>
     </div>
@@ -107,19 +107,21 @@
             permArr.length = 0;
             usedChars.length = 0;
             let perm = permute(input.value);
-            output.innerHTML = "";
-            output.innerHTML = "<br>"+perm.join('<br>'); // output all combinations
+            output.innerHTML = "Found "+perm.length+" combinations, there are all:<br>";
+            output.innerHTML += "<br>"+perm.join('<br>'); // output all combinations
         }
 
         btn_exist.onclick = function() {
             permArr.length = 0;
             usedChars.length = 0;
-            let perm = permute(input.value);
-            output.innerHTML = "<br>";
+            let perm_all = permute(input.value);
+            let perm = perm_all.filter(word => word.length > 2);
+
+console.log(perm);
+
+            output.innerHTML = "Found "+perm.length+" combinations >2chars, there are existing:<br>";
             for(let i=0; i < perm.length; i++){
-                if(perm[i].length>2){
-                    checkWord(perm[i])
-                }
+                checkWord(perm[i])
             }
         }
 
