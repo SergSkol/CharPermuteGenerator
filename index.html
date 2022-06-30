@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Char Permute Generator</title>
+</head>
+<body>
+    <div>
+        <h1>Char Permute Generator</h1>
+    </div>
+    <div>
+        <input id="input" type="text" placeholder="">
+    </div>
+    <div>
+        <button id="btn_all">GENERATE ALL</button>
+        <button id="btn_exist">GET EXISTING</button>
+        <button id="btn_clear">CLEAR</button>
+    </div>
+    <div>
+        <label for="output">The result is: </label><output type="textbox" id="output"></output>
+    </div>
+
+    <script type="text/javascript">
+
+        var btn_all = document.getElementById('btn_all');
+        var btn_exist = document.getElementById('btn_exist');
+        var btn_clear = document.getElementById('btn_clear');
+        var input = document.getElementById('input');
+        var output = document.getElementById('output');
+
+        function checkWord(wordQuery){
+
+            const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/';
+            const queryParams = 'en/';
+            const url = apiUrl+queryParams+wordQuery;
+          
+            //create XMLHttpRequest object
+            const xhr = new XMLHttpRequest()
+            //open a get request with the remote server URL
+            xhr.open("GET", url);
+            //send the Http request
+            xhr.send()
+
+            //EVENT HANDLERS
+
+            //triggered when the response is completed
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    //parse JSON datax`x
+                    data = JSON.parse(xhr.responseText)
+
+                    if('title' in data){
+                        console.log('not exist : '+wordQuery);
+                      } else {
+                        console.log('exist : '+wordQuery);
+                        output.innerHTML += wordQuery+'<br>';
+                      }
+
+                } else if (xhr.status === 404) {
+                    console.log("No records found")
+                }
+            }
+
+            //triggered when a network-level error occurs with the request
+            xhr.onerror = function() {
+            console.log("Network error occurred")
+            }
+
+            //triggered periodically as the client receives data
+            //used to monitor the progress of the request
+            xhr.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    console.log(`${e.loaded} B of ${e.total} B loaded!`)
+                } else {
+                    console.log(`${e.loaded} B loaded!`)
+                }
+            }
+ 
+        }
+
+        let permArr = [];
+        let usedChars = [];
+
+        function permute(input) {
+            const chars = input.split("");
+            for (let i = 0; i < chars.length; i++) {
+                const ch = chars.splice(i, 1);
+                usedChars.push(ch);
+                //if (chars.length === 0) { //to keep original size
+                let newWord = usedChars.join("");
+                    if(permArr.indexOf(newWord) == -1){
+                    permArr[permArr.length] = newWord;
+                    }
+                //}
+                permute(chars.join(""));
+                chars.splice(i, 0, ch);
+                usedChars.pop();
+            }
+            return permArr
+        };
+
+        btn_all.onclick = function() {
+            let perm = permute(input.value);
+            output.innerHTML = "";
+            output.innerHTML = "<br>"+perm.join('<br>'); // output all combinations
+        }
+
+        btn_exist.onclick = function() {
+            let perm = permute(input.value);
+            output.innerHTML = "<br>";
+            for(let i=0; i < perm.length; i++){
+                if(perm[i].length>2){
+                    checkWord(perm[i])
+                }
+            }
+        }
+
+        btn_clear.onclick = function() {
+            output.innerHTML = "";
+        }
+    </script>
+</body>
+</html>
