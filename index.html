@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Char Permute Generator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
 <body>
-    <div>
+    <div class="jumbotron text-center">
         <h1>Char Permute Generator</h1>
     </div>
-    <div>
-        <input id="input" type="text" placeholder="">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <input id="input" type="text" placeholder="">
+            </div>
+            <div>
+                <button id="btn_all">GENERATE ALL</button>
+                <button id="btn_exist">GET EXISTING</button>
+                <button id="btn_clear">CLEAR</button>
+            </div>
+            <div>
+                <label for="output">The result is: </label><output type="textbox" id="output"></output>
+            </div>
+        </div>
     </div>
-    <div>
-        <button id="btn_all">GENERATE ALL</button>
-        <button id="btn_exist">GET EXISTING</button>
-        <button id="btn_clear">CLEAR</button>
-    </div>
-    <div>
-        <label for="output">The result is: </label><output type="textbox" id="output"></output>
-    </div>
-
     <script type="text/javascript">
 
         var btn_all = document.getElementById('btn_all');
@@ -100,12 +104,16 @@
         };
 
         btn_all.onclick = function() {
+            permArr.length = 0;
+            usedChars.length = 0;
             let perm = permute(input.value);
             output.innerHTML = "";
             output.innerHTML = "<br>"+perm.join('<br>'); // output all combinations
         }
 
         btn_exist.onclick = function() {
+            permArr.length = 0;
+            usedChars.length = 0;
             let perm = permute(input.value);
             output.innerHTML = "<br>";
             for(let i=0; i < perm.length; i++){
@@ -116,6 +124,8 @@
         }
 
         btn_clear.onclick = function() {
+            permArr.length = 0;
+            usedChars.length = 0;
             output.innerHTML = "";
         }
     </script>
