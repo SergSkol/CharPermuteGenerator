@@ -112,9 +112,10 @@
         btn_all.onclick = function() {
             permArr.length = 0;
             usedChars.length = 0;
-            let perm = permute(input.value);
+            let perm_all = permute(input.value);
+            let perm = perm_all.filter(word => word.length >= minLen.value);
 
-            output.innerHTML = "Found "+perm.length+" combinations, there are all:<br>";
+            output.innerHTML = "Found "+perm.length+" combinations >= "+minLen.value+"chars, there :<br>";
             output.innerHTML += "<br>"+perm.join('<br>'); // output all combinations
         }
 
