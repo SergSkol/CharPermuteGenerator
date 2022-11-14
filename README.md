@@ -1,6 +1,6 @@
 # Char Permute Generator
 
-> This tool was created to generate char's combination and verify if combination exists in language.
+> This tool was created to generate char's combination and verify if combination exists in language. You can choose the minimal length of words, which should be generated.
 
 ## Built With
 
