@@ -2,6 +2,10 @@
 
 > This tool was created to generate char's combination and verify if combination exists in language. You can choose the minimal length of words, which should be generated.
 
+## Screenshot
+
+![image](https://user-images.githubusercontent.com/106581139/202182440-0e8fd9f6-673d-4969-9afc-901e9de8e1c1.png)
+
 ## Built With
 
 - HTML, CSS, JavaScript
