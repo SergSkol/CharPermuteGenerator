@@ -13,7 +13,11 @@
         <div class="row">
             <div class="col-sm-4">
                 <label for="input">Language : </label>
-                <input id="lang" type="text" placeholder="en" value="en"><br>
+                <select id="lang" type="text" placeholder="en" value="en">
+                    <option value="en">English</option>
+                    <option value="ru">Russian</option>
+                </select>    
+                <br>
                 
                 <label for="input">Min length : </label>
                 <input id="minLen" type="text" placeholder="" value = 3><br>
@@ -34,119 +38,7 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-
-        var btn_all = document.getElementById('btn_all');
-        var btn_exist = document.getElementById('btn_exist');
-        var btn_clear = document.getElementById('btn_clear');
-        var lang = document.getElementById('lang');
-        var minLen = document.getElementById('minLen');
-        var input = document.getElementById('input');
-        var output = document.getElementById('output');
-
-        function checkWord(wordQuery){
-
-            const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/';
-            const queryParams = lang.value+"/"; // 'en/';
-            const url = apiUrl+queryParams+wordQuery;
-          
-            //create XMLHttpRequest object
-            const xhr = new XMLHttpRequest()
-            //open a get request with the remote server URL
-            xhr.open("GET", url);
-            //send the Http request
-            xhr.send()
-
-            //EVENT HANDLERS
-
-            //triggered when the response is completed
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    //parse JSON datax`x
-                    data = JSON.parse(xhr.responseText);
-
-                    if('title' in data){
-                        console.log('not exist : '+wordQuery);
-                      } else {
-                        console.log('exist : '+wordQuery);
-                        output.innerHTML += wordQuery+'<br>';
-                      }
-
-                } else if (xhr.status === 404) {
-                    console.log("No records found")
-                } else if (xhr.status === 429) {
-                    console.log("Too many requests")
-                }
-            }
-
-            //triggered when a network-level error occurs with the request
-            xhr.onerror = function() {
-                console.log("Network error occurred")
-            }
-
-            //triggered periodically as the client receives data
-            //used to monitor the progress of the request
-            xhr.onprogress = function(e) {
-                if (e.lengthComputable) {
-                    console.log(`${e.loaded} B of ${e.total} B loaded!`)
-                } else {
-                    console.log(`${e.loaded} B loaded!`)
-                }
-            }
- 
-        }
-
-        let permArr = [];
-        let usedChars = [];
-
-        function permute(input) {
-            const chars = input.split("");
-            for (let i = 0; i < chars.length; i++) {
-                const ch = chars.splice(i, 1);
-                usedChars.push(ch);
-                //if (chars.length === 0) { //to keep original size
-                let newWord = usedChars.join("");
-                    if(permArr.indexOf(newWord) == -1){
-                    permArr[permArr.length] = newWord;
-                    }
-                //}
-                permute(chars.join(""));
-                chars.splice(i, 0, ch);
-                usedChars.pop();
-            }
-            return permArr
-        };
-
-        btn_all.onclick = function() {
-            permArr.length = 0;
-            usedChars.length = 0;
-            let perm = permute(input.value);
-            perm = perm.filter(word => word.length >= minLen.value);
-            perm = perm.filter(word => word.length <= maxLen.value);
-
-            output.innerHTML = "Found "+perm.length+" combinations >= "+minLen.value+"chars, there :<br>";
-            output.innerHTML += "<br>"+perm.join('<br>'); // output all combinations
-        }
-
-        btn_exist.onclick = function() {
-            permArr.length = 0;
-            usedChars.length = 0;
-            let perm = permute(input.value);
-            perm = perm.filter(word => word.length >= minLen.value);
-            perm = perm.filter(word => word.length <= maxLen.value);
-
-            output.innerHTML = "Found "+perm.length+" combinations >= "+minLen.value+"chars, there are existing:<br>";
-            for(let i=0; i < perm.length; i++){
-                checkWord(perm[i]);
-                setTimeout(function(){}, 500); 
-            }
-        }
-
-        btn_clear.onclick = function() {
-            permArr.length = 0;
-            usedChars.length = 0;
-            output.innerHTML = "";
-        }
-    </script>
+    
+    <script src="./script/main.js"></script>
 </body>
 </html>
