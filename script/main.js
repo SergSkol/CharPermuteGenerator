@@ -6,27 +6,14 @@ const minLen = document.getElementById('minLen');
 const input = document.getElementById('input');
 const output = document.getElementById('output');
 
-const checkWord = (wordQuery) => {
-  const getUrl = () => {
-    if (lang.value == 'en') {
-      const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/';
-      const queryParams = lang.value+"/"; // 'en/';
-      return apiUrl + queryParams + wordQuery
-    } else if (lang.value == 'ru') {
-        const apiUrl = 'https://lleo.me/rifma/index.php?json=1';
-        const queryParams = `&word=length&length=${wordQuery.length}&first=`;
-        return apiUrl + queryParams + wordQuery
-    } else {
-        output.innerHTML = 'en or ru only in lang';
-        return ''
-    }
-  }
-
+const checkWordEn = (wordQuery) => {
   //create XMLHttpRequest object
   const xhr = new XMLHttpRequest()
   //open a get request with the remote server URL
 
-  const url = getUrl();
+  const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/';
+  const queryParams = lang.value+"/"; // 'en/'; 
+  const url = apiUrl + queryParams + wordQuery;
 
   xhr.open("GET", url );
   //send the Http request
@@ -40,20 +27,67 @@ const checkWord = (wordQuery) => {
         //parse JSON datax`x
         data = JSON.parse(xhr.responseText);
 
-        if (lang.value == 'en') {
-          if('title' in data){
-            console.log('not exist : '+wordQuery);
+        if('title' in data){
+          console.log('not exist : '+wordQuery);
+        } else {
+          console.log('exists : '+wordQuery);
+          output.innerHTML += wordQuery+'<br>';
+        }
+          
+      } else if (xhr.status === 404) {
+          console.log("No records found")
+      } else if (xhr.status === 429) {
+          console.log("Too many requests")
+      }
+  }
+
+  //triggered when a network-level error occurs with the request
+  xhr.onerror = function() {
+      console.log("Network error occurred")
+  }
+
+  //triggered periodically as the client receives data
+  //used to monitor the progress of the request
+  xhr.onprogress = function(e) {
+      if (e.lengthComputable) {
+          console.log(`${e.loaded} B of ${e.total} B loaded!`)
+      } else {
+          console.log(`${e.loaded} B loaded!`)
+      }
+  }
+}
+
+const checkWordRu = (perm, i) => {
+  //create XMLHttpRequest object
+  const xhr = new XMLHttpRequest()
+  //open a get request with the remote server URL
+
+  const wordQuery = input.value;
+
+  const apiUrl = 'https://lleo.me/rifma/index.php?json=1';
+  const queryParams = `&word=length&length=${i}&first=`;
+  const url = apiUrl + queryParams + wordQuery
+
+  xhr.open("GET", url );
+  //send the Http request
+  xhr.send();
+
+  //EVENT HANDLERS
+
+  //triggered when the response is completed
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+        //parse JSON datax`x
+        data = JSON.parse(xhr.responseText);
+
+        arr = data.result.split(' ');
+        for (let j=0; j< perm.length; j+=1) {
+          var word = perm[j];
+          if(arr.includes(perm[j])){
+            console.log('exists : '+word);
+            output.innerHTML += word+'<br>';
           } else {
-            console.log('exists : '+wordQuery);
-            output.innerHTML += wordQuery+'<br>';
-          }
-        } else if (lang.value == 'ru') {
-          arr = data.result.split(' ');
-          if(arr.includes(wordQuery)){
-            console.log('exists : '+wordQuery);
-            output.innerHTML += wordQuery+'<br>';
-          } else {
-            console.log('not exist : '+wordQuery);
+            console.log('not exist : '+word);
           }
         }
           
@@ -120,9 +154,17 @@ btn_exist.onclick = function() {
   perm = perm.filter(word => word.length <= maxLen.value);
 
   output.innerHTML = "Found "+perm.length+" combinations >= "+minLen.value+" chars, there are existing:<br>";
-  for(let i=0; i < perm.length; i++){
-      checkWord(perm[i]);
-      setTimeout(function(){}, 500); 
+  if (lang.value == 'en') {
+    for(let i=0; i < perm.length; i++){
+      checkWordEn(perm[i]);
+      setTimeout(function(){}, 500);
+    }
+  } else if (lang.value == 'ru') {
+    const mn = parseInt(minLen.value, 10);
+    const mx = Math.min(maxLen.value, input.value.length);
+    for (let i = mn; i<= mx; i+=1) {
+      checkWordRu(perm, i);
+    }
   }
 }
 
