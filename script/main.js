@@ -28,31 +28,31 @@ const checkWordEn = (wordQuery) => {
         data = JSON.parse(xhr.responseText);
 
         if('title' in data){
-          console.log('not exist : '+wordQuery);
+          // console.log('not exist : '+wordQuery);
         } else {
-          console.log('exists : '+wordQuery);
+          // console.log('exists : '+wordQuery);
           output.innerHTML += wordQuery+'<br>';
         }
           
       } else if (xhr.status === 404) {
-          console.log("No records found")
+          // console.log("No records found")
       } else if (xhr.status === 429) {
-          console.log("Too many requests")
+          // console.log("Too many requests")
       }
   }
 
   //triggered when a network-level error occurs with the request
   xhr.onerror = function() {
-      console.log("Network error occurred")
+      // console.log("Network error occurred")
   }
 
   //triggered periodically as the client receives data
   //used to monitor the progress of the request
   xhr.onprogress = function(e) {
       if (e.lengthComputable) {
-          console.log(`${e.loaded} B of ${e.total} B loaded!`)
+          // console.log(`${e.loaded} B of ${e.total} B loaded!`)
       } else {
-          console.log(`${e.loaded} B loaded!`)
+          // console.log(`${e.loaded} B loaded!`)
       }
   }
 }
@@ -84,32 +84,32 @@ const checkWordRu = (perm, i) => {
         for (let j=0; j< perm.length; j+=1) {
           var word = perm[j];
           if(arr.includes(perm[j])){
-            console.log('exists : '+word);
+            // console.log('exists : '+word);
             output.innerHTML += word+'<br>';
           } else {
-            console.log('not exist : '+word);
+            // console.log('not exist : '+word);
           }
         }
           
       } else if (xhr.status === 404) {
-          console.log("No records found")
+          // console.log("No records found")
       } else if (xhr.status === 429) {
-          console.log("Too many requests")
+          // console.log("Too many requests")
       }
   }
 
   //triggered when a network-level error occurs with the request
   xhr.onerror = function() {
-      console.log("Network error occurred")
+      // console.log("Network error occurred")
   }
 
   //triggered periodically as the client receives data
   //used to monitor the progress of the request
   xhr.onprogress = function(e) {
       if (e.lengthComputable) {
-          console.log(`${e.loaded} B of ${e.total} B loaded!`)
+          // console.log(`${e.loaded} B of ${e.total} B loaded!`)
       } else {
-          console.log(`${e.loaded} B loaded!`)
+          // console.log(`${e.loaded} B loaded!`)
       }
   }
 }
